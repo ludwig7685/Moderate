@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>hCaptcha Demo</title>
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .counter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="counter">
+            <div>hCaptchas total: <span id="totalCounter">0</span></div>
+            <div>hCaptchas solved: <span id="solvedCounter">0</span></div>
+        </div>
+        <div class="h-captcha" data-sitekey="1cee2ee2-16b0-4cb7-82c8-0fffbb2d438f"></div>
+    </div>
+    <script>
+        let totalCounter = 0;
+        let solvedCounter = 0;
+
+        const totalCounterElement = document.getElementById("totalCounter");
+        const solvedCounterElement = document.getElementById("solvedCounter");
+
+        function reloadPage() {
+            totalCounter++;
+            solvedCounter++;
+            totalCounterElement.textContent = totalCounter;
+            solvedCounterElement.textContent = solvedCounter;
+            location.reload(); // Reload the entire page
+        }
+
+        hCaptcha.render('.h-captcha', {
+            sitekey: '1cee2ee2-16b0-4cb7-82c8-0fffbb2d438f',
+            theme: 'black',
+            callback: reloadPage // Reload the page on success
+        });
+    </script>
+</body>
+</html>
