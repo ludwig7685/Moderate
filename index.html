@@ -1,56 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>hCaptcha Demo</title>
-    <script src="https://hcaptcha.com/1/api.js" async defer></script>
     <style>
         body {
-            background-color: black;
-            color: white;
             font-family: Arial, sans-serif;
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+
         .counter {
             position: absolute;
             top: 10px;
             left: 10px;
+            font-size: 20px;
+        }
+
+        .captcha-container {
+            text-align: center;
+            margin-top: 100px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="counter">
-            <div>hCaptchas total: <span id="totalCounter">0</span></div>
-            <div>hCaptchas solved: <span id="solvedCounter">0</span></div>
-        </div>
-        <div class="h-captcha" data-sitekey="1cee2ee2-16b0-4cb7-82c8-0fffbb2d438f"></div>
+    <div class="counter" id="solvedCount">Solved Count: 0</div>
+    <div class="captcha-container">
+        <div id="captcha"></div>
     </div>
+
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script>
-        let totalCounter = 0;
-        let solvedCounter = 0;
+        let solvedCount = 0;
+        let captchaWidgetId;
 
-        const totalCounterElement = document.getElementById("totalCounter");
-        const solvedCounterElement = document.getElementById("solvedCounter");
-
-        function reloadPage() {
-            totalCounter++;
-            solvedCounter++;
-            totalCounterElement.textContent = totalCounter;
-            solvedCounterElement.textContent = solvedCounter;
-            location.reload(); // Reload the entire page
+        function onCaptchaSolved() {
+            solvedCount++;
+            document.getElementById('solvedCount').innerText = `Solved Count: ${solvedCount}`;
+            reloadCaptcha();
         }
 
-        hCaptcha.render('.h-captcha', {
-            sitekey: '1cee2ee2-16b0-4cb7-82c8-0fffbb2d438f',
-            theme: 'black',
-            callback: reloadPage // Reload the page on success
+        function reloadCaptcha() {
+            if (captchaWidgetId !== undefined) {
+                hcaptcha.reset(captchaWidgetId);
+            } else {
+                captchaWidgetId = hcaptcha.render('captcha', {
+                    sitekey: '962bb21f-1e75-42d1-a1d7-967845f7c0e1',
+                    callback: onCaptchaSolved
+                });
+            }
+        }
+
+        function initCaptcha() {
+            if (typeof hcaptcha !== 'undefined') {
+                reloadCaptcha();
+            } else {
+                setTimeout(initCaptcha, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initCaptcha();
         });
     </script>
 </body>
+
 </html>
